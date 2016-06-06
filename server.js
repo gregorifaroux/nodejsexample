@@ -1,6 +1,7 @@
 #!/bin/env node
  //  OpenShift sample Node application
 var express = require('express');
+var bodyParser = require('body-parser');
 var fs = require('fs');
 
 /**
@@ -97,43 +98,55 @@ var SampleApp = function() {
     /*  ================================================================  */
 
     /**
-     *  Create the routing table entries + handlers for the application.
-     */
-    self.createRoutes = function() {
-        self.routes = {};
-
-        self.routes['/asciimo'] = function(req, res) {
-            var link = "http://i.imgur.com/kmbjB.png";
-            res.send("<html><body><img src='" + link + "'></body></html>");
-        };
-
-        self.routes['/'] = function(req, res) {
-            res.setHeader('Content-Type', 'text/html');
-            res.send(self.cache_get('index.html'));
-        };
-
-        self.routes['/get'] = function(req, res) {
-            res.status(500).json({
-                success: false,
-                message: 'Server error.',
-                data: []
-            });
-        };
-
-
-    };
-
-
-    /**
      *  Initialize the server (express) and create the routes and register
      *  the handlers.
      */
     self.initializeServer = function() {
-        self.createRoutes();
-        self.app = express.createServer();
+        self.app = express();
 
+        // express 4 POST body
+        self.app.use(bodyParser.urlencoded({
+            extended: true
+        }));
+        self.app.use(bodyParser.json());
+
+
+        self.router = express.Router();
+
+        // Sample custom API
+        self.router.get('/', function(req, res) {
+            res.json({
+                message: 'Our API is working'
+            });
+        });
+
+        self.router.route('/individuals')
+            .get(function(req, res) {
+                res.json(self.data);
+            })
+            .post(function(req, res) {
+              req.body.userid = self.data.length + 1;
+              console.log('API: POST /individuals body='+JSON.stringify(req.body));
+              self.data.push(req.body);
+              res.status(200).json({'userid':req.body.userid});
+            })
+            ;
+        self.router.route('/individuals/:userid')
+            .get(function(req, res) {
+                console.log('API: /individuals/:userid ' + req.params.userid);
+                req.params.userid--;
+                if (self.data[req.params.userid]) {
+                  res.json(self.data[req.params.userid]);
+                } else {
+                  res.status(400).json({});
+                }
+            });
+        self.app.use('/api', self.router);
+
+        // AngularJS app
         self.app.use(express.static('public'));
 
+        // CORS
         self.app.use(function(req, res, next) {
             res.header('Access-Control-Allow-Origin', '*');
             res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
@@ -144,6 +157,29 @@ var SampleApp = function() {
         for (var r in self.routes) {
             self.app.get(r, self.routes[r]);
         }
+
+        // Sample data
+        self.data = [{
+            userid: 1,
+            firstname: 'jane',
+            lastname: 'doe'
+        }, {
+            userid: 2,
+            firstname: 'john',
+            lastname: 'smith'
+        }, {
+            userid: 3,
+            firstname: 'jeanette',
+            lastname: 'lee'
+        }, ];
+
+        // Sample API
+        //self.app.list()
+        //self.routes['/api/individuals'] = function(req, res) {
+        //    res.json(self.data);
+        //};
+
+
     };
 
 
