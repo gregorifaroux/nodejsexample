@@ -125,7 +125,7 @@ var SampleApp = function() {
                 res.json(self.data);
             })
             .post(function(req, res) {
-              req.body.userid = self.data.length + 1;
+              req.body.userid = self.dataMaxKey++;
               console.log('API: POST /individuals body='+JSON.stringify(req.body));
               self.data.push(req.body);
               res.status(200).json({'userid':req.body.userid});
@@ -134,13 +134,41 @@ var SampleApp = function() {
         self.router.route('/individuals/:userid')
             .get(function(req, res) {
                 console.log('API: /individuals/:userid ' + req.params.userid);
-                req.params.userid--;
-                if (self.data[req.params.userid]) {
-                  res.json(self.data[req.params.userid]);
+                var result = self.data.filter(function(item) {
+                  return item.userid == req.params.userid;
+                });
+                if (result.length > 0) {
+                  res.json(result[0]);
                 } else {
                   res.status(400).json({});
                 }
-            });
+            })
+            .put(function(req, res) {
+                console.log('API: PUT /individuals userid='+req.params.userid+' body='+JSON.stringify(req.body));
+                var result = self.data.filter(function(item) {
+                  return item.userid == req.params.userid;
+                });
+                if (result.length > 0) {
+                  var index = self.data.indexOf(result[0]);
+                  self.data[index] = req.body;
+                  res.json(self.data[index]);
+                } else {
+                  res.status(400).json({});
+                }
+            })
+            .delete(function(req, res) {
+                console.log('API: DELETE /individuals userid='+req.params.userid);
+                var result = self.data.filter(function(item) {
+                  return item.userid == req.params.userid;
+                });
+                if (result.length > 0) {
+                  self.data.splice(self.data.indexOf(result[0]), 1);
+                  res.json(result[0]);
+                } else {
+                  res.status(400).json({});
+                }
+            })
+            ;
         self.app.use('/api', self.router);
 
         // AngularJS app
@@ -172,6 +200,8 @@ var SampleApp = function() {
             firstname: 'jeanette',
             lastname: 'lee'
         }, ];
+
+        self.dataMaxKey = self.data.length + 1;
 
         // Sample API
         //self.app.list()

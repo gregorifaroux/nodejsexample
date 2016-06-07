@@ -14,22 +14,27 @@
     </head>
 
     <body ng-controller="MainCtrl as vm">
-        <p>Display a value from the controller: Hello
+        <p>Hello
             {{vm.name}}!</p>
         <div>
         <li ng-repeat="individual in vm.individuals">
             {{individual.userid}}
             {{individual.firstname}}
             {{individual.lastname}}
+            <button ng-click="vm.edit(individual.userid)">EDIT</button>
+            <button ng-click="vm.delete(individual.userid)">DELETE</button>
         </li>
     </div>
     <br/>
     <div>
         <form novalidate class="simple-form">
+            Id <br/>
+            {{ vm.individualToSave.userid }}<br/>
             Firstname:
             <input type="text" ng-model="vm.individualToSave.firstname"/><br/>
             lastname:
             <input type="text" ng-model="vm.individualToSave.lastname"/><br/>
+            <input type="submit" ng-click="vm.cancel()" value="Cancel"/>
             <input type="submit" ng-click="vm.save()" value="Save"/>
         </form>
     </div>
