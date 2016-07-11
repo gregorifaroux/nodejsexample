@@ -13,12 +13,25 @@ module nodejsexample {
             console.log("home.controller constructor " + this.api.getUsername());
             var vm = this;
 
+            // Create a blank user to add new items or edit existing ones
             vm.individualToSave = vm.api.newUser();
-            vm.individuals = vm.api.getUsers();
+
+
+            // Object to query the datastore and stores the return value in result
             vm.query = {
                 userid: 1,
                 result: null
             };
+
+            // Example using a class with composition (instead of using interface)
+            var myUser: Api.User = new Api.User(vm.api);
+            myUser.init(null, 'Neville', 'Stackoverflow');
+            console.log('Debug Stackoverflow: '+myUser.toString());
+            console.log('Debug Stackoverflow firstname: '+myUser.getFirstname());
+            myUser.save();
+
+            // Get all the users from the memory store see server.js
+            vm.individuals = vm.api.getUsers();
 
         }
 

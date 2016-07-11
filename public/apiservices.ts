@@ -11,6 +11,36 @@ module Api {
         update(IUser): IUser
     }
 
+    export class User {
+          user: IUser;
+          static $inject = ['apiService'];
+
+          constructor(api: Api.ApiService) {
+            this.user = api.newUser();
+          }
+
+          init(userid: number, firstname: string, lastname: string): void {
+            this.user.userid = userid;
+            this.user.firstname = firstname;
+            this.user.lastname = lastname;
+          }
+
+          getFirstname(): string {
+            return this.user.firstname;
+          }
+
+          getLastname(): string {
+            return this.user.lastname;
+          }
+
+          toString(): string {
+            return JSON.stringify(this.user);
+          }
+
+          save(): ng.IPromise<IUser> {
+            return this.user.$save();
+          }
+        }
 
     export class ApiService {
         static $inject = ['$resource'];
@@ -18,7 +48,7 @@ module Api {
 
         constructor(private $resource: ng.resource.IResourceService) {
             console.log("ApiService constructor ");
-        
+
             this.UserResource = <IUserResource>this.$resource('/api/individuals/:userid',
                 {userid: '@userid'},
                 {

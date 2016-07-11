@@ -1,5 +1,30 @@
 var Api;
 (function (Api) {
+    var User = (function () {
+        function User(api) {
+            this.user = api.newUser();
+        }
+        User.prototype.init = function (userid, firstname, lastname) {
+            this.user.userid = userid;
+            this.user.firstname = firstname;
+            this.user.lastname = lastname;
+        };
+        User.prototype.getFirstname = function () {
+            return this.user.firstname;
+        };
+        User.prototype.getLastname = function () {
+            return this.user.lastname;
+        };
+        User.prototype.toString = function () {
+            return JSON.stringify(this.user);
+        };
+        User.prototype.save = function () {
+            return this.user.$save();
+        };
+        User.$inject = ['apiService'];
+        return User;
+    }());
+    Api.User = User;
     var ApiService = (function () {
         function ApiService($resource) {
             this.$resource = $resource;

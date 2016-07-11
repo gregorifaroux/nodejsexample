@@ -6,11 +6,16 @@ var nodejsexample;
             console.log("home.controller constructor " + this.api.getUsername());
             var vm = this;
             vm.individualToSave = vm.api.newUser();
-            vm.individuals = vm.api.getUsers();
             vm.query = {
                 userid: 1,
                 result: null
             };
+            var myUser = new Api.User(vm.api);
+            myUser.init(null, 'Neville', 'Stackoverflow');
+            console.log('Debug Stackoverflow: ' + myUser.toString());
+            console.log('Debug Stackoverflow firstname: ' + myUser.getFirstname());
+            myUser.save();
+            vm.individuals = vm.api.getUsers();
         }
         MainCtrl.prototype.save = function () {
             var vm = this;
