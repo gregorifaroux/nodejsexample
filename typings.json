@@ -1,0 +1,8 @@
+{
+  "name": "Digistarters-NodesjsExample-App",
+  "dependencies": {},
+  "globalDependencies": {
+    "angular": "registry:dt/angular#1.5.0+20160709055139",
+    "angular-resource": "registry:dt/angular-resource#1.5.0+20160613142217"
+  }
+}

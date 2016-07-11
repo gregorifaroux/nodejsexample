@@ -1,22 +1,20 @@
 {
-  "name": "OpenShift-Sample-App",
+  "name": "Digistarters-Nodejsexample-App",
   "version": "1.0.0",
-  "description": "OpenShift Sample Application",
+  "description": "Digistarters NodeJS Application",
   "keywords": [
-    "OpenShift",
     "Node.js",
     "application",
     "openshift"
   ],
   "author": {
-    "name": "OpenShift",
-    "email": "ramr@example.org",
-    "url": "http://www.openshift.com/"
+    "name": "Gregori Faroux",
+    "url": "http://www.digistarters.com/"
   },
-  "homepage": "http://www.openshift.com/",
+  "homepage": "http://www.digistarters.com/",
   "repository": {
     "type": "git",
-    "url": "https://github.com/openshift/origin-server"
+    "url": "https://github.com/gregorifaroux/nodejsexample"
   },
   "engines": {
     "node": ">= 0.6.0",
